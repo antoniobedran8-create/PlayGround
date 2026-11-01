@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="theme-color" content="#0b1014">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Arkenfall: Emberlight — a single-player pocket remix of the Arkenfall lowlands, tuned for low-end phones like the Redmi 14C.">
+  <title>Arkenfall: Emberlight</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d1412'/%3E%3Cpath d='M16 4c3 6 7 8 7 14a7 7 0 1 1-14 0c0-6 4-8 7-14z' fill='%23f0a24a'/%3E%3Cpath d='M16 14c1.6 3 3.4 4 3.4 7a3.4 3.4 0 1 1-6.8 0c0-3 1.8-4 3.4-7z' fill='%23ffe6b0'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <svg class="icon-defs" aria-hidden="true">
+    <symbol id="i-sword" viewBox="0 0 24 24"><path d="M14.5 3.5 21 10l-2 2-2-2-7.2 7.2 1.6 1.6-2.8 2.8-2.8-2.8 2.8-2.8 1.6 1.6L17 10.4l-2-2 2-2Z"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 2c1 4-4 5.5-4 10a4 4 0 0 0 8 0c0-2-1-3-2-4 .2 3-1 4-2 4 1-3-1-6 0-10Z"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21S3 15.4 3 9.2A4.7 4.7 0 0 1 12 6a4.7 4.7 0 0 1 9 3.2C21 15.4 12 21 12 21Z"/></symbol>
+    <symbol id="i-potion" viewBox="0 0 24 24"><path d="M9 2h6v2h-1v5l3.2 5.4A4 4 0 0 1 13.8 21h-3.6a4 4 0 0 1-3.4-6.6L10 9V4H9V2Zm3 9-2.5 4.2a2 2 0 0 0 1.7 3h3.6a2 2 0 0 0 1.7-3L14 11h-2Z"/></symbol>
+    <symbol id="i-talk" viewBox="0 0 24 24"><path d="M4 4h16v12H9l-5 4V4Zm3 4h10v2H7V8Zm0 4h7v2H7v-2Z"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><path d="m9.5 2.5 1-1.5h3l1 1.5 1.8.8 1.7-.6 2.1 2.1-.6 1.7.8 1.8 1.7 1v3l-1.7 1-.8 1.8.6 1.7-2.1 2.1-1.7-.6-1.8.8-1 1.7h-3l-1-1.7-1.8-.8-1.7.6-2.1-2.1.6-1.7-.8-1.8-1.7-1v-3l1.7-1 .8-1.8-.6-1.7 2.1-2.1 1.7.6 1.8-.8ZM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/></symbol>
+    <symbol id="i-sound" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4V9Zm12-1a6 6 0 0 1 0 8v-2a4 4 0 0 0 0-4V8Zm0-4a10 10 0 0 1 0 16v-2a8 8 0 0 0 0-12V4Z"/></symbol>
+    <symbol id="i-mute" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4V9Zm12.3 1.3 1.4-1.4 2.3 2.3 2.3-2.3 1.4 1.4-2.3 2.3 2.3 2.3-1.4 1.4-2.3-2.3-2.3 2.3-1.4-1.4 2.3-2.3-2.3-2.3Z"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 4 7 7 7-7 1 1-7 7 7 7-1 1-7-7-7 7-1-1 7-7-7-7 1-1Z"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M3 4h7a2 2 0 0 1 2 2v15a3 3 0 0 0-2-1H3V4Zm18 0h-7a2 2 0 0 0-2 2v15a3 3 0 0 1 2-1h7V4Z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="m12 2 8 16-8-4-8 4 8-16Z"/></symbol>
+  </svg>
+
+  <canvas id="game" aria-label="Arkenfall: Emberlight game world"></canvas>
+  <div id="vignette" aria-hidden="true"></div>
+
+  <div id="hud" hidden>
+    <div class="hud-top">
+      <div class="status-panel panel">
+        <button id="level-button" class="level-badge" aria-label="Open character sheet">1</button>
+        <div class="status-bars">
+          <div class="bar hp"><i id="hp-fill"></i><span id="hp-text">100 / 100</span></div>
+          <div class="bar mp"><i id="mp-fill"></i><span id="mp-text">60 / 60</span></div>
+          <div class="bar xp"><i id="xp-fill"></i><span id="xp-text">0 / 82 XP</span></div>
+        </div>
+      </div>
+      <div class="hud-actions">
+        <div class="gold-pill panel"><span class="coin"></span><b id="gold-text">0</b></div>
+        <button id="btn-sound" class="round-btn" aria-label="Toggle sound"><svg><use href="#i-sound"></use></svg></button>
+        <button id="btn-menu" class="round-btn" aria-label="Open settings"><svg><use href="#i-gear"></use></svg></button>
+      </div>
+    </div>
+
+    <div id="quest-tracker" class="panel">
+      <div class="quest-kicker">JOURNAL</div>
+      <div class="quest-line"><b id="quest-title">A New Dawn</b><span id="quest-arrow" class="quest-arrow"><svg><use href="#i-arrow"></use></svg></span><span id="quest-dist">—</span></div>
+      <div id="quest-objective">Find Warden Maren in Emberhold.</div>
+    </div>
+
+    <div id="boss-bar" class="boss-bar" hidden>
+      <div class="boss-name">The Ember Warden</div>
+      <div class="bar boss"><i id="boss-fill"></i></div>
+    </div>
+
+    <div id="region-banner" class="region-banner"></div>
+    <div id="toasts" aria-live="polite"></div>
+    <div id="level-banner" class="level-banner" hidden>LEVEL UP</div>
+
+    <div id="interact-prompt" hidden>
+      <button id="btn-interact" class="interact-btn"><svg><use href="#i-talk"></use></svg><span id="interact-label">Talk</span><kbd>F</kbd></button>
+    </div>
+
+    <div id="controls">
+      <div id="joystick" aria-label="Movement joystick">
+        <div class="stick-base"></div>
+        <div id="joystick-knob"></div>
+        <span class="stick-mark n">▲</span><span class="stick-mark s">▼</span>
+      </div>
+      <div id="action-cluster">
+        <button id="btn-potion" class="action potion" aria-label="Drink healing potion"><svg><use href="#i-potion"></use></svg><span class="badge" id="potion-count">2</span><kbd>R</kbd></button>
+        <button id="btn-mend" class="action mend" aria-label="Cast Mend"><svg><use href="#i-heart"></use></svg><kbd>Q</kbd></button>
+        <button id="btn-ember" class="action ember" aria-label="Cast Ember Bolt"><svg><use href="#i-flame"></use></svg><kbd>E</kbd></button>
+        <button id="btn-attack" class="action attack" aria-label="Attack"><svg><use href="#i-sword"></use></svg><kbd>Space</kbd></button>
+      </div>
+      <div id="desktop-hint">WASD move &middot; Space attack &middot; E ember &middot; Q mend &middot; R potion &middot; F talk &middot; Esc menu</div>
+    </div>
+
+    <div id="fps" hidden>30 FPS</div>
+  </div>
+
+  <section id="start-screen" class="overlay title-screen">
+    <div class="embers" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="start-card">
+      <div class="brand">
+        <div class="eyebrow">A POCKET REMIX OF THE LOWLANDS</div>
+        <h1>ARKENFALL</h1>
+        <div class="subtitle"><span>EMBERLIGHT</span></div>
+      </div>
+      <p class="tagline">The Lowlands, in your pocket.</p>
+      <p class="blurb">A compact action RPG about a town at the edge of the mire. Clear the cellars, hunt the wolves, and face what wakes beneath the Sunken Crypt.</p>
+      <button id="btn-play" class="primary-btn">Play</button>
+      <div id="save-summary" class="save-summary" hidden></div>
+      <div class="feature-chips">
+        <span>2D canvas</span><span>30 FPS cap</span><span>no downloads</span><span>touch first</span>
+      </div>
+      <p class="lowend-note">Tuned for 8&nbsp;GB Android phones such as the Redmi&nbsp;14C: cached terrain, pooled effects, a hard frame cap, and zero external assets.</p>
+      <div class="start-links">
+        <button id="btn-start-settings" class="text-btn">Settings</button>
+        <button id="btn-new" class="text-btn">New journey</button>
+      </div>
+      <p class="controls-note">Touch: joystick + action buttons. Desktop: WASD / arrows, Space, E, Q, R, F.</p>
+    </div>
+  </section>
+
+  <section id="dialogue" class="overlay sheet-overlay" hidden>
+    <div class="dialog-sheet" role="dialog" aria-modal="true" aria-labelledby="dialog-name">
+      <div class="dialog-head">
+        <canvas id="dialog-portrait" width="48" height="48" aria-hidden="true"></canvas>
+        <div>
+          <div id="dialog-title" class="dialog-kicker">Emberhold</div>
+          <h2 id="dialog-name">Warden Maren</h2>
+        </div>
+        <button id="btn-dialog-close" class="round-btn" aria-label="Close dialogue"><svg><use href="#i-close"></use></svg></button>
+      </div>
+      <p id="dialog-text" class="dialog-text"></p>
+      <div id="dialog-choices" class="dialog-choices"></div>
+      <div class="dialog-foot"><span class="coin"></span><b id="dialog-gold">0</b> gold <span class="dialog-hint">1–4 to choose</span></div>
+    </div>
+  </section>
+
+  <section id="settings" class="overlay sheet-overlay" hidden>
+    <div class="panel-sheet" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <div class="sheet-head">
+        <div><div class="dialog-kicker">TUNE THE EMBER</div><h2 id="settings-title">Settings</h2></div>
+        <button id="btn-settings-close" class="round-btn" aria-label="Close settings"><svg><use href="#i-close"></use></svg></button>
+      </div>
+      <div class="settings-body">
+        <label class="setting-row">Quality
+          <select id="set-quality">
+            <option value="auto">Auto</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option>
+          </select>
+        </label>
+        <label class="setting-row">Frame cap
+          <select id="set-fps"><option value="24">24 FPS (battery)</option><option value="30">30 FPS (balanced)</option><option value="60">60 FPS (smooth)</option></select>
+        </label>
+        <label class="setting-row">Sound
+          <input id="set-sound" type="checkbox">
+        </label>
+        <label class="setting-row">Haptics
+          <input id="set-haptics" type="checkbox">
+        </label>
+        <label class="setting-row">Auto-attack
+          <input id="set-autoattack" type="checkbox">
+        </label>
+        <label class="setting-row">Show FPS
+          <input id="set-showfps" type="checkbox">
+        </label>
+        <button id="btn-lowend" class="secondary-btn">Apply Redmi-class low-end preset</button>
+        <button id="btn-reset" class="danger-btn">Reset saved journey</button>
+        <p class="settings-note">Auto quality watches frame time and lowers the internal render scale before it drops frames. Gameplay pauses while this menu is open.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="stats" class="overlay sheet-overlay" hidden>
+    <div class="panel-sheet character-sheet" role="dialog" aria-modal="true" aria-labelledby="stats-title">
+      <div class="sheet-head">
+        <div><div class="dialog-kicker">THE EMBERBOUND</div><h2 id="stats-title">Character</h2></div>
+        <button id="btn-stats-close" class="round-btn" aria-label="Close character sheet"><svg><use href="#i-close"></use></svg></button>
+      </div>
+      <div id="stats-body" class="stats-body"></div>
+    </div>
+  </section>
+
+  <section id="death" class="overlay center-overlay" hidden>
+    <div class="center-card">
+      <div class="eyebrow">THE EMBER FADES</div>
+      <h2>You fell in the Lowlands</h2>
+      <p id="death-text">The temple hearth pulls you back. You lose a little gold, but your gear and your quest remain.</p>
+      <button id="btn-respawn" class="primary-btn">Wake at the temple</button>
+    </div>
+  </section>
+
+  <section id="victory" class="overlay center-overlay" hidden>
+    <div class="center-card victory-card">
+      <div class="eyebrow">THE CRYPT FALLS SILENT</div>
+      <h2>The Ember Warden is broken</h2>
+      <p>Emberhold will see another dawn. The Lowlands are still wild — keep exploring, or begin a new journey.</p>
+      <div id="victory-stats" class="victory-stats"></div>
+      <button id="btn-victory-continue" class="primary-btn">Keep exploring</button>
+    </div>
+  </section>
+
+  <div id="loading" class="loading"><span></span>Kindling the ember&hellip;</div>
+
+  <script type="module" src="js/game.js"></script>
+</body>
+</html>
